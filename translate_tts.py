@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 import argparse
 import os
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from gtts import gTTS
 
 
 def translate_and_tts(text: str, out_path: str, play: bool = False):
-    tr = Translator()
-    res = tr.translate(text, dest='kn')
-    translated = res.text
+    translated = GoogleTranslator(source='auto', target='kn').translate(text)
     tts = gTTS(text=translated, lang='kn')
     tts.save(out_path)
     print("Translated text:\n", translated)

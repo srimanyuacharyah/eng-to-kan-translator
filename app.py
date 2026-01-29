@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, url_for
 import os
 import uuid
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from gtts import gTTS
 
 APP_ROOT = os.path.dirname(__file__)
@@ -23,9 +23,7 @@ def translate():
     if not text:
         return jsonify({'error': 'No text provided'}), 400
 
-    tr = Translator()
-    res = tr.translate(text, dest='kn')
-    translated = res.text
+    translated = GoogleTranslator(source='auto', target='kn').translate(text)
 
     filename = f"{uuid.uuid4().hex}.mp3"
     out_path = os.path.join(OUTPUT_DIR, filename)
