@@ -17,6 +17,8 @@ def translate_and_tts(text: str, out_path: str, play: bool = False):
         try:
             from playsound import playsound
             playsound(out_path)
+        except ImportError:
+            print("Playback skipped: 'playsound' library not installed.")
         except Exception as e:
             print("Playback failed:", e)
 
