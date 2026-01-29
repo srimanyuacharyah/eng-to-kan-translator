@@ -11,7 +11,10 @@
       <h1>English → Kannada TTS</h1>
       <form id="translate-form">
         <label for="text">Enter English text</label>
-        <textarea id="text" rows="5" placeholder="Type English text here..."></textarea>
+        <div class="input-group">
+          <textarea id="text" rows="5" placeholder="Type English text or click Mic to speak..."></textarea>
+          <button type="button" id="mic-btn" title="Speak">🎤</button>
+        </div>
         <button type="submit">Translate & Speak</button>
       </form>
 
@@ -28,10 +31,43 @@
     <script>
       const form = document.getElementById('translate-form');
       const textEl = document.getElementById('text');
+      const micBtn = document.getElementById('mic-btn');
       const result = document.getElementById('result');
       const translatedEl = document.getElementById('translated');
       const audio = document.getElementById('audio');
       const errorEl = document.getElementById('error');
+
+      // Speech Recognition Setup
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        recognition.onstart = () => {
+          micBtn.classList.add('recording');
+        };
+
+        recognition.onend = () => {
+          micBtn.classList.remove('recording');
+        };
+
+        recognition.onresult = (event) => {
+          const speechToText = event.results[0][0].transcript;
+          textEl.value = speechToText;
+          // Auto-submit after speech
+          form.dispatchEvent(new Event('submit'));
+        };
+
+        micBtn.addEventListener('click', () => {
+          recognition.start();
+        });
+      } else {
+        micBtn.style.display = 'none';
+        console.warn('Web Speech API not supported in this browser.');
+      }
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -57,6 +93,7 @@
         translatedEl.textContent = data.translated;
         audio.src = data.audio_url;
         result.classList.remove('hidden');
+        audio.play().catch(e => console.log('Auto-play blocked:', e));
       });
     </script>
   </body>
