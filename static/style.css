@@ -1,0 +1,10 @@
+:root{--bg:#f7f9fb;--card:#ffffff;--accent:#0b5cff;--muted:#6b7280}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);margin:0;padding:32px}
+main{max-width:800px;margin:0 auto;background:var(--card);padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(11,92,255,0.06)}
+h1{margin-top:0}
+label{display:block;margin-bottom:8px;color:var(--muted)}
+textarea{width:100%;padding:12px;border:1px solid #e6e9ef;border-radius:6px;font-size:14px}
+button{margin-top:12px;padding:10px 16px;border:none;background:var(--accent);color:#fff;border-radius:6px;cursor:pointer}
+#result{margin-top:20px}
+.hidden{display:none}
+#error{color:#b91c1c;margin-top:12px}

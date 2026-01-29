@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>English → Kannada TTS</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <main>
+      <h1>English → Kannada TTS</h1>
+      <form id="translate-form">
+        <label for="text">Enter English text</label>
+        <textarea id="text" rows="5" placeholder="Type English text here..."></textarea>
+        <button type="submit">Translate & Speak</button>
+      </form>
+
+      <section id="result" class="hidden">
+        <h2>Translated (Kannada):</h2>
+        <div id="translated"></div>
+        <h2>Audio</h2>
+        <audio id="audio" controls></audio>
+      </section>
+
+      <div id="error" class="hidden"></div>
+    </main>
+
+    <script>
+      const form = document.getElementById('translate-form');
+      const textEl = document.getElementById('text');
+      const result = document.getElementById('result');
+      const translatedEl = document.getElementById('translated');
+      const audio = document.getElementById('audio');
+      const errorEl = document.getElementById('error');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.classList.add('hidden');
+        result.classList.add('hidden');
+        const text = textEl.value.trim();
+        if (!text) return;
+
+        const resp = await fetch('/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json().catch(()=>({error:'Unknown error'}));
+          errorEl.textContent = err.error || 'Translation failed';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        const data = await resp.json();
+        translatedEl.textContent = data.translated;
+        audio.src = data.audio_url;
+        result.classList.remove('hidden');
+      });
+    </script>
+  </body>
+</html>
